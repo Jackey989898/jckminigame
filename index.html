@@ -4,131 +4,46 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#f5f3ee" />
-  <meta name="description" content="開一間小小棋室，邀請朋友來場線上井字棋。" />
-  <title>小局 Duo — 和朋友下一盤</title>
+  <meta name="description" content="開一間小小棋室，邀請朋友來場線上雙人遊戲。" />
+  <title>小局 Duo — 和朋友玩一局</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
-    :root { color-scheme: light; --paper:#f5f3ee; --ink:#24251f; --muted:#818178; --line:#deddd5; --card:#fffefa; --orange:#e46e45; --blue:#687fbb; --green:#597b62; --mono:'DM Mono',monospace; --sans:'DM Sans','Noto Sans TC',sans-serif; }
-    * { box-sizing:border-box; }
-    body { margin:0; min-height:100vh; background:var(--paper); color:var(--ink); font-family:var(--sans); }
-    button,input { font:inherit; }
-    button { cursor:pointer; }
-    .shell { max-width:1080px; min-height:100vh; margin:0 auto; padding:0 52px; display:flex; flex-direction:column; }
-    header { height:90px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid var(--line); }
-    .brand { display:flex; gap:11px; align-items:center; text-decoration:none; color:inherit; font-weight:700; letter-spacing:-.04em; font-size:18px; }
-    .brand-mark { width:29px;height:29px;background:var(--ink);border-radius:9px;display:grid;place-items:center;position:relative; }
-    .brand-mark:before,.brand-mark:after { content:''; position:absolute; width:13px;height:2px;background:#f5f3ee;border-radius:3px;transform:rotate(45deg); }
-    .brand-mark:after { transform:rotate(-45deg); }
-    .brand small { display:block; color:var(--muted); font-family:var(--mono); font-size:9px; font-weight:400; letter-spacing:.16em; margin-top:1px; }
-    .header-note { font-size:12px; color:var(--muted); display:flex;align-items:center;gap:8px; }
-    .header-note i,.status-dot { width:7px;height:7px;border-radius:50%;background:#b8b7ad;display:inline-block; }
-    .header-note i { background:#9da990; }
-    main { flex:1; display:grid; grid-template-columns:1fr 1fr; align-items:center; gap:76px; padding:55px 0 66px; }
-    .intro { align-self:center; padding-bottom:28px; }
-    .eyebrow { color:var(--orange); font:500 11px var(--mono); letter-spacing:.18em; text-transform:uppercase; display:flex;align-items:center;gap:10px;margin-bottom:20px; }
-    .eyebrow:before { content:''; width:24px; height:1px; background:var(--orange); }
-    h1 { font-size:clamp(42px,5.4vw,66px);line-height:1.2;letter-spacing:-.075em;margin:0 0 18px;font-weight:700; }
-    h1 span { color:var(--orange); }
-    .lead { color:#74746c;font-size:14px;line-height:1.9;max-width:345px;margin:0 0 31px; }
-    .game-meta { display:flex; align-items:center; gap:16px; color:var(--muted); font:11px var(--mono); letter-spacing:.04em; }
-    .game-meta span { display:flex;align-items:center;gap:7px; }
-    .game-meta span+span:before { content:'';width:3px;height:3px;border-radius:50%;background:#bdbcb4;margin-right:9px; }
-    .game-meta svg { width:14px;height:14px; }
-    .game-card { background:var(--card);border:1px solid #e6e4dc;border-radius:20px;box-shadow:0 16px 50px rgba(45,42,30,.055);padding:27px 28px 25px; width:100%;max-width:402px;justify-self:end; }
-    .card-top { display:flex;align-items:center;justify-content:space-between;padding-bottom:20px;border-bottom:1px solid #eeede7; }
-    .mode { font-size:12px;font-weight:600;display:flex;align-items:center;gap:8px; }
-    .mode-badge { width:25px;height:25px;border-radius:8px;background:#f6eee8;color:var(--orange);display:grid;place-items:center;font-size:13px; }
-    .connection { font:10px var(--mono);color:var(--muted);display:flex;align-items:center;gap:7px; }
-    .connection.online .status-dot { background:#65a374;box-shadow:0 0 0 3px #65a37422; }
-    .connection.error .status-dot { background:var(--orange); }
-    .players { display:grid;grid-template-columns:1fr 24px 1fr;align-items:center;padding:18px 0 20px;gap:8px; }
-    .player { display:flex;align-items:center;gap:10px;min-width:0; }
-    .player:last-child { justify-content:flex-end;text-align:right; }
-    .symbol { width:35px;height:35px;border-radius:11px;display:grid;place-items:center;font-size:21px;font-weight:500;background:#f9eae4;color:var(--orange); }
-    .player:last-child .symbol { background:#e9edf6;color:var(--blue); }
-    .player-name { font-size:11px;font-weight:600;white-space:nowrap; }
-    .player-label { font:9px var(--mono);color:#9a9991;margin-top:3px;letter-spacing:.03em; }
-    .versus { font:9px var(--mono);color:#c3c1b8;text-align:center; }
-    .status-line { min-height:31px;text-align:center;margin:0 0 14px;font-size:12px;color:#77776f; }
-    .status-line strong { color:var(--ink);font-weight:600; }
-    .board { display:grid;grid-template-columns:repeat(3,1fr);gap:8px;aspect-ratio:1; }
-    .cell { border:1px solid #e9e7df;border-radius:13px;background:#faf9f5;display:grid;place-items:center;font-size:clamp(35px,5vw,54px);font-weight:400;transition:background .18s,border-color .18s,transform .15s; color:var(--orange); }
-    .cell.o { color:var(--blue); }
-    .cell:not(:disabled):hover { background:#f3f1e9;border-color:#cfcdc3;transform:translateY(-1px); }
-    .cell:disabled { cursor:default; }
-    .cell.win { background:#edf3ed;border-color:#cadbca; }
-    .actions { display:flex;gap:9px;margin-top:18px; }
-    .btn { border:0;border-radius:10px;min-height:43px;padding:0 14px;display:flex;justify-content:center;align-items:center;gap:8px;font-size:11px;font-weight:600;transition:transform .14s,background .14s; }
-    .btn:active { transform:scale(.98); }
-    .btn-primary { flex:1;background:var(--ink);color:#fffefa; }
-    .btn-primary:hover { background:#3d3e37; }
-    .btn-secondary { background:#f0efe9;color:#53544d; }
-    .btn-secondary:hover { background:#e7e6de; }
-    .btn svg { width:14px;height:14px; }
-    .join-row { display:flex;gap:8px;margin-top:10px; }
-    .join-row input { width:0;flex:1;min-width:0;border:1px solid #e6e4dc;border-radius:9px;background:#faf9f6;height:38px;padding:0 11px;font-size:11px;outline:none;transition:border .15s; }
-    .join-row input:focus { border-color:#a6a397; }
-    .join-row input::placeholder { color:#aaa99f; }
-    .join-row button { border:0;background:transparent;color:#77776f;font-size:11px;font-weight:600;padding:0 8px; }
-    .join-row button:hover { color:var(--ink); }
-    .invite { display:none;margin-top:11px;padding:11px 12px;border-radius:10px;background:#f6f4ef;border:1px solid #eeece5; }
-    .invite.show { display:block; }
-    .invite-label { font:9px var(--mono);letter-spacing:.12em;color:#97968c;margin-bottom:7px; }
-    .invite-link { display:flex;gap:8px;align-items:center; }
-    .invite-link input { flex:1;min-width:0;border:0;background:transparent;padding:0;font:10px var(--mono);color:#63635b;outline:none; }
-    .copy-btn { flex:none;border:0;background:var(--card);border:1px solid #e5e3da;border-radius:7px;padding:6px 9px;font-size:10px;color:#62635c; }
-    .copy-btn:hover { border-color:#c8c6bc; }
-    .hint { min-height:17px;margin-top:9px;font-size:10px;line-height:1.6;color:#9a7662;text-align:center; }
-    footer { height:63px;border-top:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;color:#96958d;font:9px var(--mono);letter-spacing:.08em; }
-    footer a { color:inherit;text-decoration:none; }
-    footer a:hover { color:var(--ink); }
-    @media(max-width:760px) { .shell{padding:0 24px} main{grid-template-columns:1fr;gap:27px;padding:40px 0 44px;max-width:470px;margin:0 auto;width:100%}.intro{padding:0}.eyebrow{margin-bottom:13px}h1{font-size:47px;margin-bottom:12px}.lead{font-size:13px;margin-bottom:17px}.game-card{justify-self:center;max-width:410px;padding:22px 21px}.header-note{font-size:10px}.header-note span{display:none} }
-    @media(max-width:390px) { .shell{padding:0 17px}.game-card{padding:19px 16px}.players{gap:4px}.player{gap:7px}.symbol{width:31px;height:31px}.player-name{font-size:10px} }
+    :root{color-scheme:light;--paper:#f5f3ee;--ink:#24251f;--muted:#818178;--line:#deddd5;--card:#fffefa;--orange:#e46e45;--blue:#687fbb;--green:#597b62;--mono:'DM Mono',monospace;--sans:'DM Sans','Noto Sans TC',sans-serif}
+    *{box-sizing:border-box}body{margin:0;min-height:100vh;background:var(--paper);color:var(--ink);font-family:var(--sans)}button,input{font:inherit}button{cursor:pointer}.shell{max-width:1120px;min-height:100vh;margin:auto;padding:0 48px;display:flex;flex-direction:column}
+    header{height:82px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line)}.brand{display:flex;gap:11px;align-items:center;text-decoration:none;color:inherit;font-weight:700;letter-spacing:-.04em;font-size:18px}.brand-mark{width:29px;height:29px;background:var(--ink);border-radius:9px;display:grid;place-items:center;position:relative}.brand-mark:before,.brand-mark:after{content:'';position:absolute;width:13px;height:2px;background:#f5f3ee;border-radius:3px;transform:rotate(45deg)}.brand-mark:after{transform:rotate(-45deg)}.brand small{display:block;color:var(--muted);font:9px var(--mono);letter-spacing:.16em;margin-top:1px}.header-note{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:8px}.header-note i,.status-dot{width:7px;height:7px;border-radius:50%;background:#b8b7ad;display:inline-block}.header-note i{background:#9da990}
+    main{flex:1;display:grid;grid-template-columns:minmax(290px,.9fr) minmax(380px,1.1fr);align-items:start;gap:55px;padding:48px 0 58px}.intro{padding-top:18px}.eyebrow{color:var(--orange);font:500 11px var(--mono);letter-spacing:.18em;text-transform:uppercase;display:flex;align-items:center;gap:10px;margin-bottom:18px}.eyebrow:before{content:'';width:24px;height:1px;background:var(--orange)}h1{font-size:clamp(42px,5vw,62px);line-height:1.15;letter-spacing:-.075em;margin:0 0 16px;font-weight:700}h1 span{color:var(--orange)}.lead{color:#74746c;font-size:13px;line-height:1.85;max-width:355px;margin:0 0 19px}.game-meta{display:flex;gap:15px;align-items:center;color:var(--muted);font:10px var(--mono);letter-spacing:.04em;margin-bottom:26px}.game-meta span+span:before{content:'';width:3px;height:3px;border-radius:50%;background:#bdbcb4;display:inline-block;margin:0 12px 2px 0}
+    .game-list-title{font-size:11px;font-weight:700;color:#68685f;margin:0 0 10px;display:flex;justify-content:space-between}.game-list-title small{font:9px var(--mono);color:#aaa99f;font-weight:400}.game-list{display:grid;grid-template-columns:1fr 1fr;gap:8px}.game-choice{border:1px solid #e5e3dc;background:#f9f8f4;border-radius:12px;text-align:left;min-height:71px;padding:11px 12px;transition:.16s}.game-choice:hover{border-color:#c9c7bd;background:#fffefa;transform:translateY(-1px)}.game-choice.active{border-color:#e6a18a;background:#fff8f4;box-shadow:0 0 0 2px #e46e4510}.game-choice:disabled{cursor:default;opacity:.58;transform:none}.game-emoji{font-size:17px;display:block;margin-bottom:5px}.game-choice strong{display:block;font-size:10px;font-weight:700}.game-choice small{display:block;margin-top:3px;font-size:9px;color:#929188;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .game-card{background:var(--card);border:1px solid #e6e4dc;border-radius:20px;box-shadow:0 16px 50px #2d2a1e0e;padding:23px 24px 21px;width:100%;justify-self:end;min-height:570px}.card-top{display:flex;align-items:center;justify-content:space-between;padding-bottom:17px;border-bottom:1px solid #eeede7}.mode{font-size:12px;font-weight:600;display:flex;align-items:center;gap:8px}.mode-badge{width:25px;height:25px;border-radius:8px;background:#f6eee8;color:var(--orange);display:grid;place-items:center;font-size:13px}.connection{font:10px var(--mono);color:var(--muted);display:flex;align-items:center;gap:7px}.connection.online .status-dot{background:#65a374;box-shadow:0 0 0 3px #65a37422}.connection.error .status-dot{background:var(--orange)}.players{display:grid;grid-template-columns:1fr 24px 1fr;align-items:center;padding:15px 0 16px;gap:8px}.player{display:flex;align-items:center;gap:9px;min-width:0}.player:last-child{justify-content:flex-end;text-align:right}.symbol{width:33px;height:33px;border-radius:11px;display:grid;place-items:center;font-size:20px;font-weight:500;background:#f9eae4;color:var(--orange)}.player:last-child .symbol{background:#e9edf6;color:var(--blue)}.player-name{font-size:10px;font-weight:600;white-space:nowrap}.player-label{font:8px var(--mono);color:#9a9991;margin-top:3px}.versus{font:9px var(--mono);color:#c3c1b8;text-align:center}.status-line{min-height:29px;text-align:center;margin:0 0 12px;font-size:11px;color:#77776f;display:flex;align-items:center;justify-content:center}.status-line strong{color:var(--ink);font-weight:700}.arena{min-height:290px;display:flex;flex-direction:column;align-items:center;justify-content:center;border:1px solid #eeece5;border-radius:14px;background:#fcfbf8;padding:14px;overflow:hidden}.arena-note{color:#99988f;font-size:11px;text-align:center;line-height:1.8}.actions{display:flex;gap:8px;margin-top:14px}.btn{border:0;border-radius:10px;min-height:41px;padding:0 13px;display:flex;justify-content:center;align-items:center;gap:7px;font-size:10px;font-weight:700;transition:transform .14s,background .14s}.btn:active{transform:scale(.98)}.btn:disabled{opacity:.45;cursor:default}.btn-primary{flex:1;background:var(--ink);color:#fffefa}.btn-primary:hover:not(:disabled){background:#3d3e37}.btn-secondary{background:#f0efe9;color:#53544d}.btn-secondary:hover:not(:disabled){background:#e7e6de}.btn svg{width:14px;height:14px}.join-row{display:flex;gap:7px;margin-top:9px}.join-row input{width:0;flex:1;min-width:0;border:1px solid #e6e4dc;border-radius:9px;background:#faf9f6;height:37px;padding:0 11px;font-size:10px;outline:none}.join-row input:focus{border-color:#a6a397}.join-row input::placeholder{color:#aaa99f}.join-row button{border:0;background:transparent;color:#77776f;font-size:10px;font-weight:700;padding:0 8px}.join-row button:hover{color:var(--ink)}.invite{display:none;margin-top:10px;padding:10px 11px;border-radius:10px;background:#f6f4ef;border:1px solid #eeece5}.invite.show{display:block}.invite-label{font:9px var(--mono);letter-spacing:.12em;color:#97968c;margin-bottom:6px}.invite-link{display:flex;gap:8px;align-items:center}.invite-link input{flex:1;min-width:0;border:0;background:transparent;padding:0;font:9px var(--mono);color:#63635b;outline:none}.copy-btn{flex:none;border:1px solid #e5e3da;border-radius:7px;padding:6px 9px;font-size:9px;background:var(--card);color:#62635c}.hint{min-height:16px;margin-top:8px;font-size:9px;line-height:1.5;color:#9a7662;text-align:center}.hint:empty{display:none}footer{height:59px;border-top:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;color:#96958d;font:9px var(--mono);letter-spacing:.08em}footer a{color:inherit;text-decoration:none}footer a:hover{color:var(--ink)}
+    .gomoku{display:grid;grid-template-columns:repeat(15,1fr);width:min(100%,330px);aspect-ratio:1;background:#e6d3b0;padding:4px;border-radius:5px;gap:0}.gomoku button{position:relative;border:0;background:transparent;padding:0;aspect-ratio:1;min-width:0}.gomoku button:before{content:'';position:absolute;width:100%;height:1px;background:#927c58;top:50%;left:0}.gomoku button:after{content:'';position:absolute;height:100%;width:1px;background:#927c58;left:50%;top:0}.stone{position:absolute;width:76%;height:76%;border-radius:50%;z-index:1;left:12%;top:12%;box-shadow:0 1px 2px #0003}.stone.x{background:#292a27}.stone.o{background:#fff;border:1px solid #777;box-shadow:0 1px 2px #0003}.gomoku button.win .stone{outline:3px solid #e46e45}
+    .playing-cards{display:flex;gap:5px;flex-wrap:wrap;justify-content:center}.playing-card{width:38px;height:52px;border:1px solid #ddd9d0;border-radius:7px;background:#fff;display:grid;place-items:center;font:500 12px var(--mono);box-shadow:0 2px 4px #0000000a;color:#333}.playing-card.red{color:#d45143}.playing-card.back{background:repeating-linear-gradient(45deg,#63729a,#63729a 3px,#7885a7 3px,#7885a7 6px);border:2px solid white;box-shadow:0 0 0 1px #bbb}.playing-card.selected{outline:2px solid var(--orange);transform:translateY(-3px)}.card-row{display:flex;align-items:center;gap:7px;justify-content:center;margin:5px 0}.card-row-label{width:23px;font-size:15px;text-align:center}.table-cards{display:flex;gap:5px;justify-content:center;flex-wrap:wrap;min-height:53px;margin:8px 0}.card-button{border:0;padding:0;background:transparent}.card-lanes{width:100%;max-width:340px}.lane{display:flex;align-items:center;gap:4px;margin:4px 0;min-height:25px}.lane-suit{width:20px;text-align:center;font-size:16px}.lane-values{display:flex;gap:2px;flex:1}.lane-cell{width:20px;height:24px;border:1px solid #e2dfd7;border-radius:3px;background:white;display:grid;place-items:center;font:8px var(--mono);color:#777}.lane-cell.played{background:#eaf0e8;border-color:#c7d6c3;color:#384b3d}.lane-cell.red{color:#d45143}.hand-label{font:9px var(--mono);color:#96958d;letter-spacing:.08em;margin:10px 0 6px;text-align:center}.mini-actions{display:flex;gap:6px;justify-content:center;margin-top:10px}.mini-actions .btn{min-height:34px}.score-line{display:flex;justify-content:center;gap:20px;font:10px var(--mono);color:#717168;margin:4px 0 8px}.puzzle-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;width:min(100%,255px);aspect-ratio:1}.light{border:1px solid #d9d6cd;border-radius:7px;background:#f1efe9;transition:.14s}.light.on{background:#edc276;border-color:#dcad53;box-shadow:inset 0 0 12px #ffedbc}.psych-choices{display:grid;grid-template-columns:1fr 1fr;gap:9px;width:100%;max-width:300px}.choice-btn{border:1px solid #e4e1d9;background:#fff;border-radius:12px;padding:15px 8px;font-size:12px;font-weight:700;color:var(--ink)}.choice-btn:hover{border-color:#d3a38e;background:#fff8f4}.rules{margin-top:10px;font-size:9px;color:#939188;line-height:1.65;text-align:center;max-width:350px}.waiting{color:#89887f;font-size:11px;text-align:center;line-height:1.9}.playing-cards.hand{max-height:125px;overflow:auto;padding:4px}
+    @media(max-width:850px){.shell{padding:0 25px}main{grid-template-columns:1fr;gap:25px;max-width:580px;margin:0 auto;width:100%;padding:35px 0 45px}.intro{padding-top:0}.game-card{justify-self:center;min-height:560px}.lead{max-width:500px}.game-list{grid-template-columns:repeat(3,1fr)}}@media(max-width:520px){.shell{padding:0 16px}header{height:68px}.header-note{font-size:10px}.header-note span{display:none}main{padding-top:27px}h1{font-size:43px}.lead{font-size:12px}.game-list{grid-template-columns:repeat(2,1fr)}.game-choice{min-height:65px}.game-card{padding:18px 14px;min-height:530px}.arena{min-height:270px;padding:10px}.playing-card{width:32px;height:46px;font-size:10px}.gomoku{width:min(100%,310px)}footer{font-size:8px;letter-spacing:.04em}}
   </style>
 </head>
 <body>
   <div class="shell">
-    <header>
-      <a class="brand" href="#" aria-label="小局首頁"><span class="brand-mark"></span><span>小局<small>DUO PLAY</small></span></a>
-      <div class="header-note"><i></i><span>一場只需要兩個人</span></div>
-    </header>
+    <header><a class="brand" href="#" aria-label="小局首頁"><span class="brand-mark"></span><span>小局<small>DUO PLAY</small></span></a><div class="header-note"><i></i><span>一場只需要兩個人</span></div></header>
     <main>
       <section class="intro">
-        <div class="eyebrow">A LITTLE GAME FOR TWO</div>
-        <h1>棋逢<br><span>對手。</span></h1>
-        <p class="lead">不用下載，也不用約時間。開一間小小棋室，把連結傳給朋友，現在就來一盤。</p>
-        <div class="game-meta">
-          <span><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="14" height="14" rx="2"/><path d="M8 3v14M13 3v14M3 8h14M3 13h14"/></svg>井字棋</span>
-          <span>2 PLAYERS</span><span>FREE</span>
-        </div>
+        <div class="eyebrow">A LITTLE GAME FOR TWO</div><h1>找個朋友<br><span>玩一局。</span></h1>
+        <p class="lead">不用下載，也不用約時間。挑一款喜歡的遊戲，開一間小小棋室，把連結傳給朋友。</p>
+        <div class="game-meta"><span>6 款雙人遊戲</span><span>即時連線</span><span>免費</span></div>
+        <div class="game-list-title">挑一款開始 <small>CHOOSE YOUR GAME</small></div>
+        <div id="gameList" class="game-list"></div>
       </section>
-      <section class="game-card" aria-label="井字棋遊戲">
-        <div class="card-top">
-          <div class="mode"><span class="mode-badge">✳</span>友誼賽</div>
-          <div id="connection" class="connection"><i class="status-dot"></i><span id="connectionText">尚未連線</span></div>
-        </div>
-        <div class="players">
-          <div class="player"><div class="symbol">×</div><div><div class="player-name" id="nameX">你</div><div class="player-label">PLAYER 01</div></div></div>
-          <div class="versus">VS</div>
-          <div class="player"><div><div class="player-name" id="nameO">朋友</div><div class="player-label">PLAYER 02</div></div><div class="symbol">○</div></div>
-        </div>
-        <div id="status" class="status-line" aria-live="polite">開一間棋室，邀朋友加入吧</div>
-        <div class="board" id="board" role="grid" aria-label="井字棋棋盤"></div>
-        <div class="actions">
-          <button id="createBtn" class="btn btn-primary"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M10 3v14M3 10h14"/></svg>開一間棋室</button>
-          <button id="rematchBtn" class="btn btn-secondary" hidden><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M16 8a6 6 0 0 0-10.5-2L4 8"/><path d="M4 4v4h4M4 12a6 6 0 0 0 10.5 2L16 12"/><path d="M16 16v-4h-4"/></svg>再來一局</button>
-        </div>
-        <div id="invite" class="invite">
-          <div class="invite-label">你的邀請連結</div>
-          <div class="invite-link"><input id="inviteUrl" readonly aria-label="邀請連結"><button id="copyBtn" class="copy-btn">複製連結</button></div>
-        </div>
-        <div class="join-row" id="joinRow"><input id="roomInput" placeholder="或輸入朋友的邀請連結" aria-label="朋友的邀請連結"><button id="joinBtn">加入房間 →</button></div>
+      <section class="game-card" aria-label="雙人遊戲">
+        <div class="card-top"><div class="mode"><span class="mode-badge" id="gameIcon">✳</span><span id="gameTitle">五子棋</span></div><div id="connection" class="connection"><i class="status-dot"></i><span id="connectionText">尚未連線</span></div></div>
+        <div class="players"><div class="player"><div class="symbol">×</div><div><div class="player-name" id="nameX">你</div><div class="player-label">PLAYER 01</div></div></div><div class="versus">VS</div><div class="player"><div><div class="player-name" id="nameO">朋友</div><div class="player-label">PLAYER 02</div></div><div class="symbol">○</div></div></div>
+        <div id="status" class="status-line" aria-live="polite">選好遊戲後，開房邀請朋友加入</div>
+        <div id="arena" class="arena"><div class="arena-note">選擇遊戲，開一間棋室<br>朋友加入後就能開始</div></div>
+        <div class="actions"><button id="createBtn" class="btn btn-primary">＋ 開一間棋室</button><button id="rematchBtn" class="btn btn-secondary" hidden>再玩一局</button></div>
+        <div id="invite" class="invite"><div class="invite-label">你的邀請連結</div><div class="invite-link"><input id="inviteUrl" readonly aria-label="邀請連結"><button id="copyBtn" class="copy-btn">複製連結</button></div></div>
+        <div class="join-row" id="joinRow"><input id="roomInput" placeholder="貼上朋友的邀請連結或房間代碼" aria-label="朋友的邀請連結"><button id="joinBtn">加入 →</button></div>
         <div id="hint" class="hint" aria-live="polite"></div>
       </section>
     </main>
-    <footer><span>MADE FOR A LITTLE FRIENDLY COMPETITION</span><a href="#" id="resetLink">重新開始</a></footer>
+    <footer><span>MADE FOR A LITTLE FRIENDLY COMPETITION</span><a href="#" id="resetLink">離開房間</a></footer>
   </div>
   <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/13.1.0/firebase-app.js';
@@ -136,122 +51,94 @@
     import { getDatabase, ref, get, set, onValue, runTransaction } from 'https://www.gstatic.com/firebasejs/13.1.0/firebase-database.js';
     import { firebaseConfig } from './firebase-config.js';
 
-    const $ = id => document.getElementById(id);
-    const boardEl=$('board'), statusEl=$('status'), hintEl=$('hint');
-    const createBtn=$('createBtn'), rematchBtn=$('rematchBtn'), joinBtn=$('joinBtn'), roomInput=$('roomInput');
-    const invite=$('invite'), inviteUrl=$('inviteUrl'), connectionBadge=$('connection'), connectionText=$('connectionText');
-    const WIN_LINES=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
-    let app, auth, db, user=null, roomId=null, roomRef=null, role=null, roomState=null, unsubscribe=null;
-    const firebaseConfigured = firebaseConfig.apiKey && !firebaseConfig.apiKey.startsWith('請填入') && !!firebaseConfig.databaseURL;
-
-    function setStatus(message){ statusEl.innerHTML=message; }
-    function setConnection(label,state=''){connectionText.textContent=label;connectionBadge.className=`connection ${state}`;}
-    function outcome(cells){for(const line of WIN_LINES)if(cells[line[0]]&&cells[line[0]]===cells[line[1]]&&cells[line[1]]===cells[line[2]])return{winner:cells[line[0]],line};return cells.every(Boolean)?{winner:null,line:[]}:null;}
+    const $=id=>document.getElementById(id),arena=$('arena'),statusEl=$('status'),hintEl=$('hint');
+    const games=[
+      {id:'gomoku',name:'五子棋',icon:'⚫',desc:'連成五子就獲勝',rules:'黑白輪流落子，先連成五子的一方獲勝。'},
+      {id:'joker',name:'抽鬼牌',icon:'🃏',desc:'抽走最後鬼牌的人輸',rules:'先把手牌同點數的牌配對丟掉，再輪流從對方手牌抽一張。配成一對就丟掉，最後拿著鬼牌的人輸。'},
+      {id:'red',name:'撿紅點',icon:'♥',desc:'湊點數，收下紅牌',rules:'每回合出一張牌，可收取桌面上總點數相同的牌；最後紅牌較多者勝。A=1、J=11、Q=12、K=13。'},
+      {id:'sevens',name:'排七',icon:'7',desc:'接龍出牌，先出完獲勝',rules:'從七開始接龍，每種花色往上接到 K、往下接到 A。無牌可接時可跳過，先出完手牌獲勝。'},
+      {id:'puzzle',name:'合作解謎',icon:'✦',desc:'一起把燈全部熄掉',rules:'兩人共用一個棋盤。點一盞燈會切換它和上下左右的燈，合作把所有燈熄掉。'},
+      {id:'psych',name:'信任博弈',icon:'◉',desc:'合作，還是背叛？',rules:'每回合各自選合作或背叛，選擇都鎖定後才揭曉。合作雙方各得 3 分；背叛對合作得 5 分；雙方背叛各得 1 分。共 5 回合。'}
+    ];
+    let app,auth,db,user=null,roomId=null,roomRef=null,role=null,roomData=null,unsubscribe=null,selectedGame='gomoku',selectedHand=null,selectedTable=new Set();
+    const configured=firebaseConfig.apiKey&&!firebaseConfig.apiKey.startsWith('請填入')&&!!firebaseConfig.databaseURL;
+    const suitNames=['♠','♥','♦','♣'],ranks=['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
+    function makeDeck(joker=false){const d=[];for(let s=0;s<4;s++)for(let v=1;v<=13;v++)d.push({id:`${s}-${v}`,suit:s,value:v});if(joker)d.push({id:'joker',suit:4,value:0});return shuffle(d);}
+    function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a;}
+    function makeInitialState(id){
+      if(id==='gomoku')return{phase:'waiting',board:Array(225).fill(''),turn:'X',moves:0};
+      if(id==='joker'){const deck=makeDeck(true),hands={X:deck.slice(0,27),O:deck.slice(27)};for(const p of ['X','O'])removePairs(hands[p]);return{phase:'waiting',hands,turn:'X',winner:null};}
+      if(id==='red'){const deck=makeDeck();return{phase:'waiting',hands:{X:deck.slice(4,10),O:deck.slice(10,16)},table:deck.slice(0,4),pile:deck.slice(16),captured:{X:[],O:[]},turn:'X',winner:null};}
+      if(id==='sevens'){const deck=makeDeck(),hands={X:deck.slice(0,26),O:deck.slice(26)};return{phase:'waiting',hands,played:[[],[],[],[]],turn:'X',passes:0,winner:null};}
+      if(id==='puzzle'){const board=Array(25).fill(0);for(let i=0;i<13;i++)toggleLights(board,Math.floor(Math.random()*25));if(board.every(v=>v===0))toggleLights(board,Math.floor(Math.random()*25));return{phase:'waiting',board,moves:0};}
+      return{phase:'waiting',round:1,scores:{X:0,O:0},choices:{X:null,O:null},last:null};
+    }
+    function removePairs(hand){const by={};for(const c of hand){const k=String(c.value);if(!by[k])by[k]=[];by[k].push(c);}const kept=[];for(const cards of Object.values(by)){for(let i=0;i<cards.length%2;i++)kept.push(cards[i]);}return hand.splice(0,hand.length,...kept);}
+    function toggleLights(board,i){const r=Math.floor(i/5),c=i%5;for(const [dr,dc] of [[0,0],[1,0],[-1,0],[0,1],[0,-1]]){const nr=r+dr,nc=c+dc;if(nr>=0&&nr<5&&nc>=0&&nc<5){const j=nr*5+nc;board[j]=board[j]?0:1;}}}
+    function setStatus(msg){statusEl.innerHTML=msg;}
+    function setConnection(label,kind=''){ $('connectionText').textContent=label;$('connection').className=`connection ${kind}`; }
+    function currentGame(){return roomData?.game||selectedGame;}
+    function currentState(){return roomData?.state;}
+    function playerName(sym){return sym===role?'你':(roomData?.players?.[sym]?'朋友':'等待加入');}
+    function formatCard(c){if(c.id==='joker')return'鬼牌';return `${ranks[c.value-1]}${suitNames[c.suit]}`;}
+    function isRed(c){return c.suit===1||c.suit===2;}
+    function cardButton(c,klass='',onClick=null){const b=document.createElement('button');b.className=`playing-card ${isRed(c)?'red':''} ${klass}`;b.textContent=formatCard(c);b.type='button';if(onClick)b.addEventListener('click',onClick);else b.disabled=true;return b;}
+    function legalSevensCard(card,state){const row=state.played[card.suit];if(row.includes(card.value))return false;if(!row.length)return card.value===7;return card.value===7||card.value===Math.min(...row)-1||card.value===Math.max(...row)+1;}
+    function redScore(cards){return cards.filter(isRed).length;}
+    function whoLabel(sym){return sym==='X'?'黑方':'白方';}
+    function renderGameMenu(){const root=$('gameList');root.innerHTML='';for(const g of games){const b=document.createElement('button');b.className=`game-choice ${g.id===selectedGame?'active':''}`;b.disabled=!!roomId;b.innerHTML=`<span class="game-emoji">${g.icon}</span><strong>${g.name}</strong><small>${g.desc}</small>`;b.addEventListener('click',()=>{selectedGame=g.id;selectedHand=null;selectedTable.clear();renderGameMenu();updateGameHeading();render();});root.appendChild(b);}}
+    function updateGameHeading(){const g=games.find(x=>x.id===currentGame())||games[0];$('gameTitle').textContent=g.name;$('gameIcon').textContent=g.icon;}
     function render(){
-      const state=roomState, cells=state?.board || Array(9).fill(''), end=state?.status==='finished'?outcome(cells):null;
-      boardEl.innerHTML='';
-      for(let i=0;i<9;i++){
-        const cell=document.createElement('button');
-        cell.className=`cell ${cells[i]==='O'?'o':''} ${end?.line.includes(i)?'win':''}`;
-        cell.type='button';cell.setAttribute('role','gridcell');cell.setAttribute('aria-label',cells[i]?`${i+1}，${cells[i]}`:`${i+1}，空格`);
-        cell.textContent=cells[i]==='X'?'×':cells[i]==='O'?'○':'';
-        cell.disabled=!state||state.status!=='playing'||!!cells[i]||state.turn!==role;
-        cell.addEventListener('click',()=>play(i));boardEl.appendChild(cell);
-      }
-      const ready=state?.players?.O;
-      if(!state){setStatus('開一間棋室，邀朋友加入吧');}
-      else if(!ready){setStatus('棋室已開好，等朋友加入…');}
-      else if(state.status==='finished'){
-        const result=outcome(cells);
-        setStatus(result?.winner?`<strong>${result.winner===role?'你':'對手'} 獲勝！</strong> 好棋。`:'<strong>平手！</strong> 再來一局？');
-      } else setStatus(state.turn===role?'<strong>輪到你了</strong>，下個位置由你決定':'等候對手落子…');
-      rematchBtn.hidden=!(state?.status==='finished'&&ready);
-      if(state?.players){$('nameX').textContent=role==='X'?'你':'朋友';$('nameO').textContent=role==='O'?'你':(ready?'朋友':'等待加入');}
+      updateGameHeading();const state=currentState(),game=currentGame();arena.innerHTML='';
+      $('nameX').textContent=roomData?playerName('X'):'你';$('nameO').textContent=roomData?playerName('O'):'朋友';
+      $('rematchBtn').hidden=!(roomData?.state?.phase==='finished'&&roomData.players?.O);
+      if(!state){setStatus('選好遊戲後，開房邀請朋友加入');arena.innerHTML='<div class="arena-note">選擇遊戲，開一間棋室<br>朋友加入後就能開始</div>';return;}
+      if(state.phase==='waiting'){setStatus(roomData.players?.O?'準備開始…':'棋室已開好，等朋友加入…');arena.innerHTML='<div class="waiting">已選擇「'+(games.find(g=>g.id===game)?.name||'遊戲')+'」<br>分享邀請連結，朋友加入後開始</div>';return;}
+      if(state.phase==='finished')setStatus(finishedMessage(game,state));else setStatus(turnMessage(game,state));
+      if(game==='gomoku')renderGomoku(state);
+      else if(game==='joker')renderJoker(state);
+      else if(game==='red')renderRed(state);
+      else if(game==='sevens')renderSevens(state);
+      else if(game==='puzzle')renderPuzzle(state);
+      else renderPsych(state);
     }
-    async function connectFirebase(){
-      if(!firebaseConfigured)throw new Error('還缺 Firebase Realtime Database 的 databaseURL，請填入 firebase-config.js。');
-      if(!app){app=initializeApp(firebaseConfig);auth=getAuth(app);db=getDatabase(app);}
-      if(!user){const credential=await signInAnonymously(auth);user=credential.user;}
-      return user;
+    function finishedMessage(game,s){if(game==='gomoku')return`<strong>${whoLabel(s.winner)}獲勝！</strong> 好棋。`;if(game==='joker')return`<strong>${s.winner===role?'你贏了！':'對手贏了！'}</strong> 鬼牌終於現形。`;if(game==='red')return`<strong>${s.winner===role?'你贏了！':s.winner?'對手贏了！':'平手！'}</strong> 紅牌決定勝負。`;if(game==='sevens')return`<strong>${s.winner===role?'你先出完了！':'對手先出完了！'}</strong>`;if(game==='puzzle')return'<strong>一起解開了！</strong> 合作得真好。';return`<strong>${s.scores[role]>s.scores[role==='X'?'O':'X']?'你贏了！':s.scores[role]===s.scores[role==='X'?'O':'X']?'平手！':'對手贏了！'}</strong> 信任要靠一點運氣。`;}
+    function turnMessage(game,s){if(game==='gomoku'||game==='sevens'||game==='joker'||game==='red')return s.turn===role?'<strong>輪到你了</strong>，請出招':'等候對手落子…';if(game==='puzzle')return`合作模式 · 已走 ${s.moves} 步`;if(game==='psych')return s.choices?.[role]?'選擇已鎖定，等對手決定…':`第 ${s.round} / 5 回合 · 選擇你的策略`;return'輪到你了';}
+    function renderGomoku(s){const grid=document.createElement('div');grid.className='gomoku';const winLine=s.winLine||[];for(let i=0;i<225;i++){const b=document.createElement('button');b.setAttribute('aria-label',`第${Math.floor(i/15)+1}列第${i%15+1}格`);if(s.board[i]){const stone=document.createElement('span');stone.className=`stone ${s.board[i]==='X'?'x':'o'}`;b.appendChild(stone);}if(winLine.includes(i))b.classList.add('win');b.disabled=s.phase!=='playing'||s.turn!==role||!!s.board[i];b.addEventListener('click',()=>act({type:'gomoku',index:i}));grid.appendChild(b);}arena.appendChild(grid);arena.appendChild(rules('黑子先手 · 15 × 15 棋盤'))}
+    function renderJoker(s){const mine=s.hands[role]||[],theirs=s.hands[role==='X'?'O':'X']||[];const score=document.createElement('div');score.className='score-line';score.textContent=`你的手牌 ${mine.length} 張 · 對手 ${theirs.length} 張`;arena.appendChild(score);const hand=document.createElement('div');hand.className='playing-cards hand';for(const c of mine)hand.appendChild(cardButton(c));arena.appendChild(hand);arena.appendChild(document.createElement('div')).className='hand-label';const label=arena.lastChild;label.textContent=s.turn===role?'點一張牌背，從對手手中抽牌':'等待對手抽牌';const row=document.createElement('div');row.className='playing-cards';for(let i=0;i<theirs.length;i++){const b=document.createElement('button');b.className='playing-card back';b.textContent='';b.disabled=s.turn!==role;b.setAttribute('aria-label','抽一張牌');b.addEventListener('click',()=>act({type:'jokerDraw',cardId:theirs[i].id}));row.appendChild(b);}arena.appendChild(row);arena.appendChild(rules(games.find(g=>g.id==='joker').rules));}
+    function renderRed(s){const score=document.createElement('div');score.className='score-line';score.textContent=`你收 ${redScore(s.captured[role]||[])} 紅點　·　對手收 ${redScore(s.captured[role==='X'?'O':'X']||[])} 紅點　·　牌堆 ${s.pile.length}`;arena.appendChild(score);const table=document.createElement('div');table.className='table-cards';for(const c of s.table){const b=cardButton(c,selectedTable.has(c.id)?'selected':'',()=>{if(selectedTable.has(c.id))selectedTable.delete(c.id);else selectedTable.add(c.id);render();});table.appendChild(b);}arena.appendChild(table);const lbl=document.createElement('div');lbl.className='hand-label';lbl.textContent=s.turn===role?'先選手牌，再選要收的桌面牌':'對手手牌';arena.appendChild(lbl);const hand=document.createElement('div');hand.className='playing-cards hand';for(const c of s.hands[role]||[]){hand.appendChild(cardButton(c,selectedHand===c.id?'selected':'',()=>{selectedHand=c.id;selectedTable.clear();render();}));}arena.appendChild(hand);const controls=document.createElement('div');controls.className='mini-actions';const play=document.createElement('button');play.className='btn btn-secondary';play.textContent='放到桌上';play.disabled=s.turn!==role||!selectedHand;play.addEventListener('click',()=>sendRed([]));controls.appendChild(play);const take=document.createElement('button');take.className='btn btn-primary';take.textContent='收取選中的牌';take.disabled=s.turn!==role||!selectedHand||!redCaptureValid(s);take.addEventListener('click',()=>sendRed([...selectedTable]));controls.appendChild(take);arena.appendChild(controls);arena.appendChild(rules(games.find(g=>g.id==='red').rules));}
+    function redCaptureValid(s){const c=(s.hands[role]||[]).find(x=>x.id===selectedHand);if(!c||!selectedTable.size)return false;const table=s.table.filter(x=>selectedTable.has(x.id));return table.length===selectedTable.size&&table.reduce((a,x)=>a+x.value,0)===c.value;}
+    function sendRed(ids){act({type:'redPlay',cardId:selectedHand,tableIds:ids});selectedHand=null;selectedTable.clear();}
+    function renderSevens(s){const lanes=document.createElement('div');lanes.className='card-lanes';for(let su=0;su<4;su++){const lane=document.createElement('div');lane.className='lane';const mark=document.createElement('span');mark.className='lane-suit';mark.style.color=(su===1||su===2)?'#d45143':'#333';mark.textContent=suitNames[su];lane.appendChild(mark);const values=document.createElement('div');values.className='lane-values';for(let v=1;v<=13;v++){const cell=document.createElement('span');cell.className=`lane-cell ${s.played[su].includes(v)?'played':''} ${(su===1||su===2)?'red':''}`;cell.textContent=s.played[su].includes(v)?ranks[v-1]:'';values.appendChild(cell);}lane.appendChild(values);lanes.appendChild(lane);}arena.appendChild(lanes);const handLabel=document.createElement('div');handLabel.className='hand-label';handLabel.textContent=`你的手牌 ${s.hands[role].length} 張 · 點亮的牌即可出`;arena.appendChild(handLabel);const hand=document.createElement('div');hand.className='playing-cards hand';for(const c of s.hands[role]){const legal=legalSevensCard(c,s);hand.appendChild(cardButton(c,legal?'':'',legal?()=>act({type:'sevensPlay',cardId:c.id}):null));}arena.appendChild(hand);const pass=document.createElement('button');pass.className='btn btn-secondary';pass.textContent='跳過';pass.disabled=s.turn!==role||s.hands[role].some(c=>legalSevensCard(c,s));pass.addEventListener('click',()=>act({type:'sevensPass'}));const controls=document.createElement('div');controls.className='mini-actions';controls.appendChild(pass);arena.appendChild(controls);arena.appendChild(rules(games.find(g=>g.id==='sevens').rules));}
+    function renderPuzzle(s){const grid=document.createElement('div');grid.className='puzzle-grid';for(let i=0;i<25;i++){const b=document.createElement('button');b.className=`light ${s.board[i]?'on':''}`;b.setAttribute('aria-label',`燈 ${i+1} ${s.board[i]?'亮':'熄'}`);b.disabled=s.phase!=='playing';b.addEventListener('click',()=>act({type:'puzzleTap',index:i}));grid.appendChild(b);}arena.appendChild(grid);const note=document.createElement('div');note.className='rules';note.textContent=`兩人一起解題 · 已用 ${s.moves} 步 · 點燈會翻轉自己和相鄰燈`;arena.appendChild(note);}
+    function renderPsych(s){const score=document.createElement('div');score.className='score-line';score.textContent=`你 ${s.scores[role]} 分　·　對手 ${s.scores[role==='X'?'O':'X']} 分　·　第 ${Math.min(s.round,5)} / 5 回合`;arena.appendChild(score);if(s.last){const last=document.createElement('div');last.className='rules';last.textContent=`上回合：你${s.last[role]==='C'?'合作':'背叛'}，對手${s.last[role==='X'?'O':'X']==='C'?'合作':'背叛'}。`;arena.appendChild(last);}const choices=document.createElement('div');choices.className='psych-choices';for(const [key,label,desc] of [['C','🤝 合作','兩邊都合作，各得 3 分'],['D','🎭 背叛','賭對方合作可得 5 分']]){const b=document.createElement('button');b.className='choice-btn';b.innerHTML=`${label}<br><small style="font-weight:400;color:#888">${desc}</small>`;b.disabled=s.phase!=='playing'||!!s.choices[role];b.addEventListener('click',()=>act({type:'psychChoice',choice:key}));choices.appendChild(b);}arena.appendChild(choices);if(s.choices[role]){const wait=document.createElement('div');wait.className='rules';wait.textContent='你的選擇已鎖定，等對手選完才會揭曉。';arena.appendChild(wait);}arena.appendChild(rules(games.find(g=>g.id==='psych').rules));}
+    function rules(text){const d=document.createElement('div');d.className='rules';d.textContent=text;return d;}
+    async function ensureFirebase(){if(!configured)throw new Error('請先完成 firebase-config.js 設定。');if(!app){app=initializeApp(firebaseConfig);auth=getAuth(app);db=getDatabase(app);}if(!user){user=(await signInAnonymously(auth)).user;}return user;}
+    function listen(id){roomId=id;roomRef=ref(db,`rooms/${id}`);if(unsubscribe)unsubscribe();unsubscribe=onValue(roomRef,snap=>{roomData=snap.val();if(!roomData){setConnection('房間不存在','error');hintEl.textContent='找不到房間，請確認代碼。';render();return;}selectedGame=roomData.game;renderGameMenu();setConnection(roomData.players?.O?'已連線':'等待朋友加入',roomData.players?.O?'online':'');$('joinRow').hidden=!!roomData.players?.O;render();},e=>{setConnection('連線失敗','error');hintEl.textContent=e.message;});}
+    function code(){const chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';let out='';for(let i=0;i<8;i++)out+=chars[Math.floor(Math.random()*chars.length)];return out;}
+    async function createRoom(){const b=$('createBtn');b.disabled=true;setConnection('正在連線…');hintEl.textContent='正在準備棋室…';try{await ensureFirebase();let id=code(),r=ref(db,`rooms/${id}`);while((await get(r)).exists()){id=code();r=ref(db,`rooms/${id}`);}role='X';await set(r,{game:selectedGame,players:{X:user.uid,O:null},state:makeInitialState(selectedGame),createdAt:Date.now()});const url=new URL(location.href);url.searchParams.set('room',id);$('inviteUrl').value=url.toString();$('invite').classList.add('show');listen(id);}catch(e){setConnection('連線設定有誤','error');hintEl.textContent=e.message;}finally{b.disabled=false;}}
+    function extractCode(value){try{const u=new URL(value.trim());return(u.searchParams.get('room')||'').toUpperCase();}catch{return value.trim().toUpperCase();}}
+    async function joinRoom(raw){const id=extractCode(raw);if(!/^[A-HJ-NP-Z2-9]{8}$/.test(id)){hintEl.textContent='請貼上有效連結或 8 碼房間代碼。';return;}const b=$('joinBtn');b.disabled=true;setConnection('正在加入…');try{await ensureFirebase();const r=ref(db,`rooms/${id}`),snap=await get(r);if(!snap.exists())throw new Error('找不到房間，請確認代碼。');const d=snap.val();if(d.players?.X===user.uid)role='X';else if(d.players?.O===user.uid)role='O';else if(!d.players?.O){const claim=await runTransaction(ref(db,`rooms/${id}/players/O`),v=>v===null?user.uid:undefined);if(!claim.committed)throw new Error('房間已滿，請開新房間。');role='O';await runTransaction(r,current=>{if(!current)return;if(current.state?.phase==='waiting')current.state.phase='playing';return current;});}else throw new Error('房間已滿，請開新房間。');$('invite').classList.remove('show');listen(id);}catch(e){setConnection('加入失敗','error');hintEl.textContent=e.message;}finally{b.disabled=false;}}
+    function checkFive(board,i,sym){const row=Math.floor(i/15),col=i%15,line=[];for(const [dr,dc] of [[0,1],[1,0],[1,1],[1,-1]]){let count=1,coords=[i];for(const dir of [-1,1]){let r=row+dr*dir,c=col+dc*dir;while(r>=0&&r<15&&c>=0&&c<15&&board[r*15+c]===sym){coords.push(r*15+c);count++;r+=dr*dir;c+=dc*dir;}}if(count>=5)return coords;}return line;}
+    function findCard(hand,id){return hand.findIndex(c=>c.id===id);}
+    function apply(room,who,a){const s=room.state,other=who==='X'?'O':'X';if(!s||s.phase!=='playing')return false;
+      if(a.type==='gomoku'){if(s.turn!==who||s.board[a.index]||a.index<0||a.index>=225)return false;s.board[a.index]=who;s.moves++;const line=checkFive(s.board,a.index,who);if(line.length){s.phase='finished';s.winner=who;s.winLine=line;}else if(s.moves===225){s.phase='finished';s.winner=null;}else s.turn=other;return true;}
+      if(a.type==='jokerDraw'){if(s.turn!==who)return false;const i=findCard(s.hands[other],a.cardId);if(i<0)return false;const [c]=s.hands[other].splice(i,1);s.hands[who].push(c);removePairs(s.hands[who]);if(!s.hands[other].length||!s.hands[who].length){s.phase='finished';s.winner=s.hands[who].length?other:who;}else s.turn=other;return true;}
+      if(a.type==='sevensPlay'){if(s.turn!==who)return false;const i=findCard(s.hands[who],a.cardId);if(i<0)return false;const c=s.hands[who][i];if(!legalSevensCard(c,s))return false;s.hands[who].splice(i,1);s.played[c.suit].push(c.value);if(!s.hands[who].length){s.phase='finished';s.winner=who;}else{s.turn=other;s.passes=0;}return true;}
+      if(a.type==='sevensPass'){if(s.turn!==who||s.hands[who].some(c=>legalSevensCard(c,s)))return false;s.turn=other;s.passes++;if(s.passes>=2){s.phase='finished';s.winner=null;}return true;}
+      if(a.type==='redPlay'){if(s.turn!==who)return false;const i=findCard(s.hands[who],a.cardId);if(i<0)return false;const card=s.hands[who][i],ids=a.tableIds||[],selected=s.table.filter(c=>ids.includes(c.id));if(selected.length!==ids.length)return false;if(ids.length&&selected.reduce((n,c)=>n+c.value,0)!==card.value)return false;s.hands[who].splice(i,1);if(ids.length){s.table=s.table.filter(c=>!ids.includes(c.id));s.captured[who].push(card,...selected);}else s.table.push(card);if(s.pile.length&&s.hands[who].length<6)s.hands[who].push(s.pile.pop());if(!s.pile.length&&!s.hands.X.length&&!s.hands.O.length){s.phase='finished';const x=redScore(s.captured.X),o=redScore(s.captured.O);s.winner=x===o?null:x>o?'X':'O';}else s.turn=other;return true;}
+      if(a.type==='puzzleTap'){if(a.index<0||a.index>=25)return false;toggleLights(s.board,a.index);s.moves++;if(s.board.every(v=>v===0))s.phase='finished';return true;}
+      if(a.type==='psychChoice'){if(s.choices[who]||!['C','D'].includes(a.choice))return false;s.choices[who]=a.choice;if(s.choices.X&&s.choices.O){const x=s.choices.X,o=s.choices.O;s.last={X:x,O:o};if(x==='C'&&o==='C'){s.scores.X+=3;s.scores.O+=3;}else if(x==='D'&&o==='C'){s.scores.X+=5;s.scores.O-=1;}else if(x==='C'&&o==='D'){s.scores.X-=1;s.scores.O+=5;}else{s.scores.X++;s.scores.O++;}s.choices={X:null,O:null};if(s.round>=5)s.phase='finished';else s.round++;}return true;}
+      return false;
     }
-    function listenRoom(id){
-      roomId=id;roomRef=ref(db,`rooms/${id}`);
-      if(unsubscribe)unsubscribe();
-      unsubscribe=onValue(roomRef,snapshot=>{
-        roomState=snapshot.val();
-        if(!roomState){setConnection('房間不存在','error');hintEl.textContent='找不到這個棋室，請確認房間代碼。';roomReadyUI(false);render();return;}
-        setConnection(roomState.players?.O?'已連線':'等待朋友加入',roomState.players?.O?'online':'');
-        if(roomState.players?.O)hintEl.textContent='';
-        render();
-      },error=>{setConnection('連線失敗','error');hintEl.textContent=error.message;});
-    }
-    function roomReadyUI(joined){$('joinRow').hidden=joined;}
-    function makeRoomId(){const alphabet='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';let code='';for(let i=0;i<8;i++)code+=alphabet[Math.floor(Math.random()*alphabet.length)];return code;}
-    async function createRoom(){
-      createBtn.disabled=true;setConnection('正在連線…');hintEl.textContent='正在準備棋室…';
-      try{
-        await connectFirebase();
-        let id=makeRoomId(), room=ref(db,`rooms/${id}`);
-        while((await get(room)).exists()){id=makeRoomId();room=ref(db,`rooms/${id}`);}
-        roomId=id;roomRef=room;role='X';
-        await set(room,{game:'tictactoe',status:'waiting',createdAt:Date.now(),players:{X:user.uid,O:null},board:Array(9).fill(''),turn:'X'});
-        const url=new URL(location.href);url.searchParams.set('room',id);inviteUrl.value=url.toString();invite.classList.add('show');
-        listenRoom(id);setConnection('等待朋友加入');hintEl.textContent='棋室已開好，把邀請連結或房間代碼傳給朋友。';
-      }catch(error){setConnection('設定尚未完成','error');hintEl.textContent=error.message;}
-      finally{createBtn.disabled=false;}
-    }
-    async function joinRoom(raw){
-      const id=extractRoom(raw).toUpperCase();
-      if(!/^[A-HJ-NP-Z2-9]{8}$/.test(id)){hintEl.textContent='請貼上有效的邀請連結或 8 碼房間代碼。';return;}
-      joinBtn.disabled=true;setConnection('正在加入…');hintEl.textContent='正在加入棋室…';
-      try{
-        await connectFirebase();const r=ref(db,`rooms/${id}`), snapshot=await get(r);
-        if(!snapshot.exists())throw new Error('找不到這個棋室，請確認代碼或請房主重新開房。');
-        const current=snapshot.val();
-        if(current.players?.X===user.uid){role='X';}
-        else if(current.players?.O===user.uid){role='O';}
-        else if(!current.players?.O){
-          const claim=await runTransaction(ref(db,`rooms/${id}/players/O`),value=>value===null?user.uid:undefined);
-          if(!claim.committed)throw new Error('這間棋室已經有兩位玩家。');role='O';
-        }else throw new Error('這間棋室已經有兩位玩家。');
-        await runTransaction(r,current=>{
-          if(!current||!current.players?.O)return;
-          if(current.status==='waiting')return{...current,status:'playing'};
-        });
-        invite.classList.remove('show');roomReadyUI(true);listenRoom(id);
-      }catch(error){setConnection('加入失敗','error');hintEl.textContent=error.message;}
-      finally{joinBtn.disabled=false;}
-    }
-    function extractRoom(value){const trimmed=value.trim();if(!trimmed)return'';try{const url=new URL(trimmed);return url.searchParams.get('room')||url.hash.slice(1)||'';}catch{return trimmed;}}
-    async function play(index){
-      if(!roomRef||!role)return;
-      try{
-        await runTransaction(roomRef,current=>{
-          if(!current||current.status!=='playing'||current.turn!==role||current.board[index])return;
-          const next={...current,board:[...current.board],turn:role==='X'?'O':'X'};
-          next.board[index]=role;
-          if(outcome(next.board))next.status='finished';
-          return next;
-        });
-      }catch(error){hintEl.textContent=`落子失敗：${error.message}`;}
-    }
-    async function rematch(){
-      if(!roomRef||!user)return;
-      try{await runTransaction(roomRef,current=>{
-        if(!current||!current.players?.X||!current.players?.O)return;
-        if(current.status==='finished')return{...current,status:'playing',board:Array(9).fill(''),turn:'X',round:(current.round||1)+1};
-      });}catch(error){hintEl.textContent=`重新開始失敗：${error.message}`;}
-    }
-    createBtn.addEventListener('click',createRoom);
-    joinBtn.addEventListener('click',()=>joinRoom(roomInput.value));
-    roomInput.addEventListener('keydown',e=>{if(e.key==='Enter')joinRoom(roomInput.value);});
-    rematchBtn.addEventListener('click',rematch);
-    $('copyBtn').addEventListener('click',async()=>{try{await navigator.clipboard.writeText(inviteUrl.value);$('copyBtn').textContent='已複製 ✓';setTimeout(()=>$('copyBtn').textContent='複製連結',1800);}catch{inviteUrl.select();document.execCommand('copy');$('copyBtn').textContent='已複製 ✓';}});
-    $('resetLink').addEventListener('click',e=>{e.preventDefault();if(unsubscribe)unsubscribe();unsubscribe=null;roomId=null;roomRef=null;role=null;roomState=null;invite.classList.remove('show');roomReadyUI(false);$('nameX').textContent='你';$('nameO').textContent='朋友';setConnection('尚未連線');hintEl.textContent='';createBtn.disabled=false;joinBtn.disabled=false;history.replaceState({},'',location.pathname);render();});
-    render();
-    if(!firebaseConfigured){setConnection('需要 Firebase 設定','error');hintEl.textContent='Firebase 網頁設定已填入，請再補上 Realtime Database 的 databaseURL。';}
-    const invitedRoom=new URLSearchParams(location.search).get('room');
-    if(invitedRoom){roomInput.value=location.href;joinRoom(invitedRoom);}
+    async function act(action){if(!roomRef||!role)return;try{const result=await runTransaction(roomRef,current=>{if(!current||current.players?.[role]!==user.uid)return;const next=JSON.parse(JSON.stringify(current));if(!apply(next,role,action))return;return next;});if(!result.committed)hintEl.textContent='這步現在不能下，請看一下目前回合。';}catch(e){hintEl.textContent=`同步失敗：${e.message}`;}}
+    async function rematch(){if(!roomRef)return;const fresh=makeInitialState(currentGame());fresh.phase='playing';try{await runTransaction(roomRef,current=>{if(!current?.players?.X||!current?.players?.O)return;current.state=fresh;return current;});selectedHand=null;selectedTable.clear();}catch(e){hintEl.textContent=e.message;}}
+    $('createBtn').addEventListener('click',createRoom);$('joinBtn').addEventListener('click',()=>joinRoom($('roomInput').value));$('roomInput').addEventListener('keydown',e=>{if(e.key==='Enter')joinRoom(e.currentTarget.value);});$('rematchBtn').addEventListener('click',rematch);
+    $('copyBtn').addEventListener('click',async()=>{try{await navigator.clipboard.writeText($('inviteUrl').value);$('copyBtn').textContent='已複製 ✓';setTimeout(()=>$('copyBtn').textContent='複製連結',1600);}catch{$('inviteUrl').select();document.execCommand('copy');$('copyBtn').textContent='已複製 ✓';}});
+    $('resetLink').addEventListener('click',e=>{e.preventDefault();if(unsubscribe)unsubscribe();unsubscribe=null;roomId=null;roomRef=null;roomData=null;role=null;selectedHand=null;selectedTable.clear();$('invite').classList.remove('show');$('joinRow').hidden=false;setConnection('尚未連線');hintEl.textContent='';history.replaceState({},'',location.pathname);renderGameMenu();render();});
+    renderGameMenu();render();
+    if(!configured){setConnection('需要 Firebase 設定','error');hintEl.textContent='請完成 firebase-config.js 設定。';}
+    const invited=new URLSearchParams(location.search).get('room');if(invited){$('roomInput').value=location.href;joinRoom(location.href);}
   </script>
 </body>
 </html>
