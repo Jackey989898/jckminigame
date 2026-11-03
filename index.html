@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#f5f3ee" />
+  <meta name="description" content="開一間小小棋室，邀請朋友來場線上井字棋。" />
+  <title>小局 Duo — 和朋友下一盤</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root { color-scheme: light; --paper:#f5f3ee; --ink:#24251f; --muted:#818178; --line:#deddd5; --card:#fffefa; --orange:#e46e45; --blue:#687fbb; --green:#597b62; --mono:'DM Mono',monospace; --sans:'DM Sans','Noto Sans TC',sans-serif; }
+    * { box-sizing:border-box; }
+    body { margin:0; min-height:100vh; background:var(--paper); color:var(--ink); font-family:var(--sans); }
+    button,input { font:inherit; }
+    button { cursor:pointer; }
+    .shell { max-width:1080px; min-height:100vh; margin:0 auto; padding:0 52px; display:flex; flex-direction:column; }
+    header { height:90px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid var(--line); }
+    .brand { display:flex; gap:11px; align-items:center; text-decoration:none; color:inherit; font-weight:700; letter-spacing:-.04em; font-size:18px; }
+    .brand-mark { width:29px;height:29px;background:var(--ink);border-radius:9px;display:grid;place-items:center;position:relative; }
+    .brand-mark:before,.brand-mark:after { content:''; position:absolute; width:13px;height:2px;background:#f5f3ee;border-radius:3px;transform:rotate(45deg); }
+    .brand-mark:after { transform:rotate(-45deg); }
+    .brand small { display:block; color:var(--muted); font-family:var(--mono); font-size:9px; font-weight:400; letter-spacing:.16em; margin-top:1px; }
+    .header-note { font-size:12px; color:var(--muted); display:flex;align-items:center;gap:8px; }
+    .header-note i,.status-dot { width:7px;height:7px;border-radius:50%;background:#b8b7ad;display:inline-block; }
+    .header-note i { background:#9da990; }
+    main { flex:1; display:grid; grid-template-columns:1fr 1fr; align-items:center; gap:76px; padding:55px 0 66px; }
+    .intro { align-self:center; padding-bottom:28px; }
+    .eyebrow { color:var(--orange); font:500 11px var(--mono); letter-spacing:.18em; text-transform:uppercase; display:flex;align-items:center;gap:10px;margin-bottom:20px; }
+    .eyebrow:before { content:''; width:24px; height:1px; background:var(--orange); }
+    h1 { font-size:clamp(42px,5.4vw,66px);line-height:1.2;letter-spacing:-.075em;margin:0 0 18px;font-weight:700; }
+    h1 span { color:var(--orange); }
+    .lead { color:#74746c;font-size:14px;line-height:1.9;max-width:345px;margin:0 0 31px; }
+    .game-meta { display:flex; align-items:center; gap:16px; color:var(--muted); font:11px var(--mono); letter-spacing:.04em; }
+    .game-meta span { display:flex;align-items:center;gap:7px; }
+    .game-meta span+span:before { content:'';width:3px;height:3px;border-radius:50%;background:#bdbcb4;margin-right:9px; }
+    .game-meta svg { width:14px;height:14px; }
+    .game-card { background:var(--card);border:1px solid #e6e4dc;border-radius:20px;box-shadow:0 16px 50px rgba(45,42,30,.055);padding:27px 28px 25px; width:100%;max-width:402px;justify-self:end; }
+    .card-top { display:flex;align-items:center;justify-content:space-between;padding-bottom:20px;border-bottom:1px solid #eeede7; }
+    .mode { font-size:12px;font-weight:600;display:flex;align-items:center;gap:8px; }
+    .mode-badge { width:25px;height:25px;border-radius:8px;background:#f6eee8;color:var(--orange);display:grid;place-items:center;font-size:13px; }
+    .connection { font:10px var(--mono);color:var(--muted);display:flex;align-items:center;gap:7px; }
+    .connection.online .status-dot { background:#65a374;box-shadow:0 0 0 3px #65a37422; }
+    .connection.error .status-dot { background:var(--orange); }
+    .players { display:grid;grid-template-columns:1fr 24px 1fr;align-items:center;padding:18px 0 20px;gap:8px; }
+    .player { display:flex;align-items:center;gap:10px;min-width:0; }
+    .player:last-child { justify-content:flex-end;text-align:right; }
+    .symbol { width:35px;height:35px;border-radius:11px;display:grid;place-items:center;font-size:21px;font-weight:500;background:#f9eae4;color:var(--orange); }
+    .player:last-child .symbol { background:#e9edf6;color:var(--blue); }
+    .player-name { font-size:11px;font-weight:600;white-space:nowrap; }
+    .player-label { font:9px var(--mono);color:#9a9991;margin-top:3px;letter-spacing:.03em; }
+    .versus { font:9px var(--mono);color:#c3c1b8;text-align:center; }
+    .status-line { min-height:31px;text-align:center;margin:0 0 14px;font-size:12px;color:#77776f; }
+    .status-line strong { color:var(--ink);font-weight:600; }
+    .board { display:grid;grid-template-columns:repeat(3,1fr);gap:8px;aspect-ratio:1; }
+    .cell { border:1px solid #e9e7df;border-radius:13px;background:#faf9f5;display:grid;place-items:center;font-size:clamp(35px,5vw,54px);font-weight:400;transition:background .18s,border-color .18s,transform .15s; color:var(--orange); }
+    .cell.o { color:var(--blue); }
+    .cell:not(:disabled):hover { background:#f3f1e9;border-color:#cfcdc3;transform:translateY(-1px); }
+    .cell:disabled { cursor:default; }
+    .cell.win { background:#edf3ed;border-color:#cadbca; }
+    .actions { display:flex;gap:9px;margin-top:18px; }
+    .btn { border:0;border-radius:10px;min-height:43px;padding:0 14px;display:flex;justify-content:center;align-items:center;gap:8px;font-size:11px;font-weight:600;transition:transform .14s,background .14s; }
+    .btn:active { transform:scale(.98); }
+    .btn-primary { flex:1;background:var(--ink);color:#fffefa; }
+    .btn-primary:hover { background:#3d3e37; }
+    .btn-secondary { background:#f0efe9;color:#53544d; }
+    .btn-secondary:hover { background:#e7e6de; }
+    .btn svg { width:14px;height:14px; }
+    .join-row { display:flex;gap:8px;margin-top:10px; }
+    .join-row input { width:0;flex:1;min-width:0;border:1px solid #e6e4dc;border-radius:9px;background:#faf9f6;height:38px;padding:0 11px;font-size:11px;outline:none;transition:border .15s; }
+    .join-row input:focus { border-color:#a6a397; }
+    .join-row input::placeholder { color:#aaa99f; }
+    .join-row button { border:0;background:transparent;color:#77776f;font-size:11px;font-weight:600;padding:0 8px; }
+    .join-row button:hover { color:var(--ink); }
+    .invite { display:none;margin-top:11px;padding:11px 12px;border-radius:10px;background:#f6f4ef;border:1px solid #eeece5; }
+    .invite.show { display:block; }
+    .invite-label { font:9px var(--mono);letter-spacing:.12em;color:#97968c;margin-bottom:7px; }
+    .invite-link { display:flex;gap:8px;align-items:center; }
+    .invite-link input { flex:1;min-width:0;border:0;background:transparent;padding:0;font:10px var(--mono);color:#63635b;outline:none; }
+    .copy-btn { flex:none;border:0;background:var(--card);border:1px solid #e5e3da;border-radius:7px;padding:6px 9px;font-size:10px;color:#62635c; }
+    .copy-btn:hover { border-color:#c8c6bc; }
+    .hint { min-height:17px;margin-top:9px;font-size:10px;line-height:1.6;color:#9a7662;text-align:center; }
+    footer { height:63px;border-top:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;color:#96958d;font:9px var(--mono);letter-spacing:.08em; }
+    footer a { color:inherit;text-decoration:none; }
+    footer a:hover { color:var(--ink); }
+    @media(max-width:760px) { .shell{padding:0 24px} main{grid-template-columns:1fr;gap:27px;padding:40px 0 44px;max-width:470px;margin:0 auto;width:100%}.intro{padding:0}.eyebrow{margin-bottom:13px}h1{font-size:47px;margin-bottom:12px}.lead{font-size:13px;margin-bottom:17px}.game-card{justify-self:center;max-width:410px;padding:22px 21px}.header-note{font-size:10px}.header-note span{display:none} }
+    @media(max-width:390px) { .shell{padding:0 17px}.game-card{padding:19px 16px}.players{gap:4px}.player{gap:7px}.symbol{width:31px;height:31px}.player-name{font-size:10px} }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header>
+      <a class="brand" href="#" aria-label="小局首頁"><span class="brand-mark"></span><span>小局<small>DUO PLAY</small></span></a>
+      <div class="header-note"><i></i><span>一場只需要兩個人</span></div>
+    </header>
+    <main>
+      <section class="intro">
+        <div class="eyebrow">A LITTLE GAME FOR TWO</div>
+        <h1>棋逢<br><span>對手。</span></h1>
+        <p class="lead">不用下載，也不用約時間。開一間小小棋室，把連結傳給朋友，現在就來一盤。</p>
+        <div class="game-meta">
+          <span><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="14" height="14" rx="2"/><path d="M8 3v14M13 3v14M3 8h14M3 13h14"/></svg>井字棋</span>
+          <span>2 PLAYERS</span><span>FREE</span>
+        </div>
+      </section>
+      <section class="game-card" aria-label="井字棋遊戲">
+        <div class="card-top">
+          <div class="mode"><span class="mode-badge">✳</span>友誼賽</div>
+          <div id="connection" class="connection"><i class="status-dot"></i><span id="connectionText">尚未連線</span></div>
+        </div>
+        <div class="players">
+          <div class="player"><div class="symbol">×</div><div><div class="player-name" id="nameX">你</div><div class="player-label">PLAYER 01</div></div></div>
+          <div class="versus">VS</div>
+          <div class="player"><div><div class="player-name" id="nameO">朋友</div><div class="player-label">PLAYER 02</div></div><div class="symbol">○</div></div>
+        </div>
+        <div id="status" class="status-line" aria-live="polite">開一間棋室，邀朋友加入吧</div>
+        <div class="board" id="board" role="grid" aria-label="井字棋棋盤"></div>
+        <div class="actions">
+          <button id="createBtn" class="btn btn-primary"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M10 3v14M3 10h14"/></svg>開一間棋室</button>
+          <button id="rematchBtn" class="btn btn-secondary" hidden><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M16 8a6 6 0 0 0-10.5-2L4 8"/><path d="M4 4v4h4M4 12a6 6 0 0 0 10.5 2L16 12"/><path d="M16 16v-4h-4"/></svg>再來一局</button>
+        </div>
+        <div id="invite" class="invite">
+          <div class="invite-label">你的邀請連結</div>
+          <div class="invite-link"><input id="inviteUrl" readonly aria-label="邀請連結"><button id="copyBtn" class="copy-btn">複製連結</button></div>
+        </div>
+        <div class="join-row" id="joinRow"><input id="roomInput" placeholder="或輸入朋友的邀請連結" aria-label="朋友的邀請連結"><button id="joinBtn">加入房間 →</button></div>
+        <div id="hint" class="hint" aria-live="polite"></div>
+      </section>
+    </main>
+    <footer><span>MADE FOR A LITTLE FRIENDLY COMPETITION</span><a href="#" id="resetLink">重新開始</a></footer>
+  </div>
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/13.1.0/firebase-app.js';
+    import { getAuth, signInAnonymously } from 'https://www.gstatic.com/firebasejs/13.1.0/firebase-auth.js';
+    import { getDatabase, ref, get, set, onValue, runTransaction } from 'https://www.gstatic.com/firebasejs/13.1.0/firebase-database.js';
+    import { firebaseConfig } from './firebase-config.js';
+
+    const $ = id => document.getElementById(id);
+    const boardEl=$('board'), statusEl=$('status'), hintEl=$('hint');
+    const createBtn=$('createBtn'), rematchBtn=$('rematchBtn'), joinBtn=$('joinBtn'), roomInput=$('roomInput');
+    const invite=$('invite'), inviteUrl=$('inviteUrl'), connectionBadge=$('connection'), connectionText=$('connectionText');
+    const WIN_LINES=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+    let app, auth, db, user=null, roomId=null, roomRef=null, role=null, roomState=null, unsubscribe=null;
+    const firebaseConfigured = firebaseConfig.apiKey && !firebaseConfig.apiKey.startsWith('請填入') && !!firebaseConfig.databaseURL;
+
+    function setStatus(message){ statusEl.innerHTML=message; }
+    function setConnection(label,state=''){connectionText.textContent=label;connectionBadge.className=`connection ${state}`;}
+    function outcome(cells){for(const line of WIN_LINES)if(cells[line[0]]&&cells[line[0]]===cells[line[1]]&&cells[line[1]]===cells[line[2]])return{winner:cells[line[0]],line};return cells.every(Boolean)?{winner:null,line:[]}:null;}
+    function render(){
+      const state=roomState, cells=state?.board || Array(9).fill(''), end=state?.status==='finished'?outcome(cells):null;
+      boardEl.innerHTML='';
+      for(let i=0;i<9;i++){
+        const cell=document.createElement('button');
+        cell.className=`cell ${cells[i]==='O'?'o':''} ${end?.line.includes(i)?'win':''}`;
+        cell.type='button';cell.setAttribute('role','gridcell');cell.setAttribute('aria-label',cells[i]?`${i+1}，${cells[i]}`:`${i+1}，空格`);
+        cell.textContent=cells[i]==='X'?'×':cells[i]==='O'?'○':'';
+        cell.disabled=!state||state.status!=='playing'||!!cells[i]||state.turn!==role;
+        cell.addEventListener('click',()=>play(i));boardEl.appendChild(cell);
+      }
+      const ready=state?.players?.O;
+      if(!state){setStatus('開一間棋室，邀朋友加入吧');}
+      else if(!ready){setStatus('棋室已開好，等朋友加入…');}
+      else if(state.status==='finished'){
+        const result=outcome(cells);
+        setStatus(result?.winner?`<strong>${result.winner===role?'你':'對手'} 獲勝！</strong> 好棋。`:'<strong>平手！</strong> 再來一局？');
+      } else setStatus(state.turn===role?'<strong>輪到你了</strong>，下個位置由你決定':'等候對手落子…');
+      rematchBtn.hidden=!(state?.status==='finished'&&ready);
+      if(state?.players){$('nameX').textContent=role==='X'?'你':'朋友';$('nameO').textContent=role==='O'?'你':(ready?'朋友':'等待加入');}
+    }
+    async function connectFirebase(){
+      if(!firebaseConfigured)throw new Error('還缺 Firebase Realtime Database 的 databaseURL，請填入 firebase-config.js。');
+      if(!app){app=initializeApp(firebaseConfig);auth=getAuth(app);db=getDatabase(app);}
+      if(!user){const credential=await signInAnonymously(auth);user=credential.user;}
+      return user;
+    }
+    function listenRoom(id){
+      roomId=id;roomRef=ref(db,`rooms/${id}`);
+      if(unsubscribe)unsubscribe();
+      unsubscribe=onValue(roomRef,snapshot=>{
+        roomState=snapshot.val();
+        if(!roomState){setConnection('房間不存在','error');hintEl.textContent='找不到這個棋室，請確認房間代碼。';roomReadyUI(false);render();return;}
+        setConnection(roomState.players?.O?'已連線':'等待朋友加入',roomState.players?.O?'online':'');
+        if(roomState.players?.O)hintEl.textContent='';
+        render();
+      },error=>{setConnection('連線失敗','error');hintEl.textContent=error.message;});
+    }
+    function roomReadyUI(joined){$('joinRow').hidden=joined;}
+    function makeRoomId(){const alphabet='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';let code='';for(let i=0;i<8;i++)code+=alphabet[Math.floor(Math.random()*alphabet.length)];return code;}
+    async function createRoom(){
+      createBtn.disabled=true;setConnection('正在連線…');hintEl.textContent='正在準備棋室…';
+      try{
+        await connectFirebase();
+        let id=makeRoomId(), room=ref(db,`rooms/${id}`);
+        while((await get(room)).exists()){id=makeRoomId();room=ref(db,`rooms/${id}`);}
+        roomId=id;roomRef=room;role='X';
+        await set(room,{game:'tictactoe',status:'waiting',createdAt:Date.now(),players:{X:user.uid,O:null},board:Array(9).fill(''),turn:'X'});
+        const url=new URL(location.href);url.searchParams.set('room',id);inviteUrl.value=url.toString();invite.classList.add('show');
+        listenRoom(id);setConnection('等待朋友加入');hintEl.textContent='棋室已開好，把邀請連結或房間代碼傳給朋友。';
+      }catch(error){setConnection('設定尚未完成','error');hintEl.textContent=error.message;}
+      finally{createBtn.disabled=false;}
+    }
+    async function joinRoom(raw){
+      const id=extractRoom(raw).toUpperCase();
+      if(!/^[A-HJ-NP-Z2-9]{8}$/.test(id)){hintEl.textContent='請貼上有效的邀請連結或 8 碼房間代碼。';return;}
+      joinBtn.disabled=true;setConnection('正在加入…');hintEl.textContent='正在加入棋室…';
+      try{
+        await connectFirebase();const r=ref(db,`rooms/${id}`), snapshot=await get(r);
+        if(!snapshot.exists())throw new Error('找不到這個棋室，請確認代碼或請房主重新開房。');
+        const current=snapshot.val();
+        if(current.players?.X===user.uid){role='X';}
+        else if(current.players?.O===user.uid){role='O';}
+        else if(!current.players?.O){
+          const claim=await runTransaction(ref(db,`rooms/${id}/players/O`),value=>value===null?user.uid:undefined);
+          if(!claim.committed)throw new Error('這間棋室已經有兩位玩家。');role='O';
+        }else throw new Error('這間棋室已經有兩位玩家。');
+        await runTransaction(r,current=>{
+          if(!current||!current.players?.O)return;
+          if(current.status==='waiting')return{...current,status:'playing'};
+        });
+        invite.classList.remove('show');roomReadyUI(true);listenRoom(id);
+      }catch(error){setConnection('加入失敗','error');hintEl.textContent=error.message;}
+      finally{joinBtn.disabled=false;}
+    }
+    function extractRoom(value){const trimmed=value.trim();if(!trimmed)return'';try{const url=new URL(trimmed);return url.searchParams.get('room')||url.hash.slice(1)||'';}catch{return trimmed;}}
+    async function play(index){
+      if(!roomRef||!role)return;
+      try{
+        await runTransaction(roomRef,current=>{
+          if(!current||current.status!=='playing'||current.turn!==role||current.board[index])return;
+          const next={...current,board:[...current.board],turn:role==='X'?'O':'X'};
+          next.board[index]=role;
+          if(outcome(next.board))next.status='finished';
+          return next;
+        });
+      }catch(error){hintEl.textContent=`落子失敗：${error.message}`;}
+    }
+    async function rematch(){
+      if(!roomRef||!user)return;
+      try{await runTransaction(roomRef,current=>{
+        if(!current||!current.players?.X||!current.players?.O)return;
+        if(current.status==='finished')return{...current,status:'playing',board:Array(9).fill(''),turn:'X',round:(current.round||1)+1};
+      });}catch(error){hintEl.textContent=`重新開始失敗：${error.message}`;}
+    }
+    createBtn.addEventListener('click',createRoom);
+    joinBtn.addEventListener('click',()=>joinRoom(roomInput.value));
+    roomInput.addEventListener('keydown',e=>{if(e.key==='Enter')joinRoom(roomInput.value);});
+    rematchBtn.addEventListener('click',rematch);
+    $('copyBtn').addEventListener('click',async()=>{try{await navigator.clipboard.writeText(inviteUrl.value);$('copyBtn').textContent='已複製 ✓';setTimeout(()=>$('copyBtn').textContent='複製連結',1800);}catch{inviteUrl.select();document.execCommand('copy');$('copyBtn').textContent='已複製 ✓';}});
+    $('resetLink').addEventListener('click',e=>{e.preventDefault();if(unsubscribe)unsubscribe();unsubscribe=null;roomId=null;roomRef=null;role=null;roomState=null;invite.classList.remove('show');roomReadyUI(false);$('nameX').textContent='你';$('nameO').textContent='朋友';setConnection('尚未連線');hintEl.textContent='';createBtn.disabled=false;joinBtn.disabled=false;history.replaceState({},'',location.pathname);render();});
+    render();
+    if(!firebaseConfigured){setConnection('需要 Firebase 設定','error');hintEl.textContent='Firebase 網頁設定已填入，請再補上 Realtime Database 的 databaseURL。';}
+    const invitedRoom=new URLSearchParams(location.search).get('room');
+    if(invitedRoom){roomInput.value=location.href;joinRoom(invitedRoom);}
+  </script>
+</body>
+</html>
